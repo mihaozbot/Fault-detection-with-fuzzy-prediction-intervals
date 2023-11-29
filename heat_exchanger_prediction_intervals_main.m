@@ -1,13 +1,13 @@
 % Miha Ožbot
-% Final version: 28.11.2022
-% Reviewed: 06.11.2023
+% Version 1.0: 28.11.2022
+% Version 2.0: 06.11.2023
 clc; clear all; close all;
 set(0,'defaultTextInterpreter','latex')
 warning('off','all')
 
 %Enable flags, if set to true (or any number) activates the computation of
 % the related code segment
-enable_identification = 1; %Enable the identification of model, else load
+enable_identification = 0; %Enable the identification of model, else load
 enable_display_clusters = 0; %Display clusters during identification
 enable_split = 0; %Enable splitting mechanism
 enable_remove = 1; %Enable removal mechanism

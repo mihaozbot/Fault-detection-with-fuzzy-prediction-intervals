@@ -4,6 +4,7 @@
 %valid = load('measurement_steps_all_2022_06_11_17_30.mat');
 valid = load('measurement_steps_all_2022_06_14_11_28.mat');
 %valid = load('measurement_steps_all_2022_06_16_21_40.mat');
+
 ts = 2;
 u_v = (valid.u -valid.u_min)/(valid.u_max -valid.u_min)*(u_max-u_min) + u_min;
 x_v = valid.x;
@@ -182,39 +183,59 @@ h=legend([h_y_v,h_z_v_deviation,h_z_v_y,h_z_v_d,h_fault,h_fault_start],...
 set(h,'FontSize',10)
 axis manual
 xlim tight
-xlabel('Step [$k$]')
+xlabel('Time step $k$')
 ylabel('Output signal')
-title('Fault detection');
-
-figure(4)
-subplot(30,1,2:10); hold off;
-h_y_dev_top = plot(t_deviations*y_dev(k_0_plot:end) ,'k--'); hold on;
-h_y_dev_bot = plot(-t_deviations*y_dev(k_0_plot:end),'k--');
-h_error = plot(e_sim,'b');
-xlabel('Time step')
-ylabel('Prediction error')
-ylim("tight");xlim("tight");
-
-h = legend([h_y_dev_top,h_error],'Prediction intervals','Prediction error','Interpreter','latex');
+%title('Fault detection')
 set(h,'FontSize',10)
 set(gca,'FontSize', 12);
 name = ['heat_exchanger_prediction_intervals_prediction_interval_fault','.pdf'];
 saveas(gcf, name);
 
-subplot(30,1,12:20); hold off;
+figure(4)
+subplot(2,1,1); hold off;
+h_y_dev_top = plot(t_deviations*y_dev(k_0_plot:end) ,'k--'); hold on;
+h_y_dev_bot = plot(-t_deviations*y_dev(k_0_plot:end),'k--');
+h_error = plot(e_sim,'b');
+ylabel('Prediction error')
+ylim("tight");xlim("tight");
+
+h = legend([h_y_dev_top,h_error],'Prediction intervals','Prediction error','Interpreter','latex');
+
+subplot(2,1,2); hold off;
+if enable_synthetic_fault
+    h_fault_start = area(max(max(fault_diagnosis))*( ((k_steps>2150).*(k_steps<4900)) + ...
+        ((k_steps>8134).*(k_steps<9640)) + ...
+        ((k_steps>6000).*(k_steps<7000))), ...
+        'EdgeColor','none','FaceColor','g','FaceAlpha',0.1); hold on;
+else
+    h_fault_start = area(max(max(fault_diagnosis))*( ((k_steps>2150).*(k_steps<4900)) + ...
+        ((k_steps>8134).*(k_steps<9640))), ...
+        'EdgeColor','none','FaceColor','g','FaceAlpha',0.1); hold on;
+end
 h_fault = area(max(check_fault_f)*(check_fault_f > fault_threshold), ...
-    'EdgeColor','none','FaceColor','r','FaceAlpha',0.2);
+    'EdgeColor','none','FaceColor','r','FaceAlpha',0.3);
 set(gca,'fontname','Helvetica', 'FontSize', 12); hold on;
 plot(check_fault,'b');
 plot(check_fault_f,'m--');
+legend('Fault','Detected fault','Alarm signal','Filtered alarm signal','location','best')
 xlim("tight");ylim([0,max(check_fault_f)]);
-
-subplot(30,1,22:30); hold off;
+xlabel('Time step $k$')
+ylabel('Alarm signal')
 
 figure(5)
 subplot(2,1,1); hold off;
+if enable_synthetic_fault
+    h_fault_start = area(max(max(fault_diagnosis))*( ((k_steps>2150).*(k_steps<4900)) + ...
+        ((k_steps>8134).*(k_steps<9640)) + ...
+        ((k_steps>6000).*(k_steps<7000))), ...
+        'EdgeColor','none','FaceColor','g','FaceAlpha',0.1); hold on;
+else
+    h_fault_start = area(max(max(fault_diagnosis))*( ((k_steps>2150).*(k_steps<4900)) + ...
+        ((k_steps>8134).*(k_steps<9640))), ...
+        'EdgeColor','none','FaceColor','g','FaceAlpha',0.1); hold on;
+end
 plot(fault_diagnosis);
-legend('Input signal', 'Output signal', 'Reservoir signal', 'Affine constant')
+legend('Fault','Input signal', 'Output signal', 'Reservoir signal', 'Affine constant')
 ylim("tight");xlim("tight");
 ylabel('Kalman gain')
 

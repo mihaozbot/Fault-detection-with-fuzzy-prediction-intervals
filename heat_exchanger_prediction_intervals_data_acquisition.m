@@ -13,3 +13,4 @@ if enable_disturbance
 else
     phi = [u_f((k - 1):-1:(k - m))',-y_f((k - 1):-1:(k - n))', 1]';
 end
+

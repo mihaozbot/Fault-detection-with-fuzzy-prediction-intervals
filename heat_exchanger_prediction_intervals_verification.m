@@ -93,3 +93,7 @@ h=legend('System output $y$','Model output $\hat{y}$','Confidence interval',...
 set(h,'FontSize',10)
 %h = title('Simulation in parallel');
 set(h,'FontSize',10,'FontWeight','Normal','fontname','Times')
+
+name = ['heat_exchanger_prediction_intervals_confidence_intervals','.pdf'];
+exportgraphics(gcf,name,'BackgroundColor','none');
+

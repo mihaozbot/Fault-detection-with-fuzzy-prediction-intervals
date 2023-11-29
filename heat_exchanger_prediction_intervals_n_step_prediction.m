@@ -4,6 +4,7 @@
 %valid = load('measurement_steps_all_2022_06_11_17_30.mat');
 valid = load('measurement_steps_all_2022_06_14_11_28.mat');
 %valid = load('measurement_steps_all_2022_06_16_21_40.mat');
+
 ts = 2;
 u_v = (valid.u -valid.u_min)/(valid.u_max -valid.u_min)*(u_max-u_min) + u_min;
 x_v = valid.x;
@@ -154,12 +155,12 @@ ylim([20,80])
 %Display true fault
 k_steps = 0:1:length(u_est);
 if enable_synthetic_fault
-    h_fault_start = area(max(max(phi_dist))*( ((k_steps>2150).*(k_steps<4900)) + ...
+    h_fault_start = area(80*( ((k_steps>2150).*(k_steps<4900)) + ...
         ((k_steps>8134).*(k_steps<9640)) + ...
         ((k_steps>6000).*(k_steps<7000))), ...
         'EdgeColor','none','FaceColor','g','FaceAlpha',0.1); hold on;
 else
-    h_fault_start = area(max(max(phi_dist))*( ((k_steps>2150).*(k_steps<4900)) + ...
+    h_fault_start = area(80*( ((k_steps>2150).*(k_steps<4900)) + ...
         ((k_steps>8134).*(k_steps<9640))), ...
         'EdgeColor','none','FaceColor','g','FaceAlpha',0.1); hold on;
 end
@@ -185,6 +186,10 @@ xlim tight
 xlabel('Time step $k$')
 ylabel('Output signal')
 %title('Fault detection')
+set(h,'FontSize',10)
+set(gca,'FontSize', 12);
+name = ['heat_exchanger_prediction_intervals_prediction_interval_fault','.pdf'];
+exportgraphics(gcf,name,'BackgroundColor','none');
 
 figure(4)
 subplot(2,1,1); hold off;
@@ -195,10 +200,6 @@ ylabel('Prediction error')
 ylim("tight");xlim("tight");
 
 h = legend([h_y_dev_top,h_error],'Prediction intervals','Prediction error','Interpreter','latex');
-set(h,'FontSize',10)
-set(gca,'FontSize', 12);
-name = ['heat_exchanger_prediction_intervals_prediction_interval_fault','.pdf'];
-saveas(gcf, name);
 
 subplot(2,1,2); hold off;
 if enable_synthetic_fault
